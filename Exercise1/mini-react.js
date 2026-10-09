@@ -57,3 +57,58 @@ export function createElement(type, props, ...children) {
         }
     };
 }
+export function renderToDOM(vnode) {
+    if (
+        vnode === null ||
+        typeof vnode !== "object" ||
+        typeof vnode.type !== "string" ||
+        vnode.props === null ||
+        typeof vnode.props !== "object" ||
+        !Array.isArray(vnode.props.children)
+    ) {
+        throw new TypeError("Invalid VNode");
+    }
+
+    if (vnode.type === "TEXT_ELEMENT") {
+        if (typeof vnode.props.nodeValue !== "string") {
+            throw new TypeError("Text nodeValue must be a string");
+        }
+
+        return document.createTextNode(vnode.props.nodeValue);
+    }
+
+    const element = document.createElement(vnode.type);
+
+    for (const [name, value] of Object.entries(vnode.props)) {
+        if (name === "children") {
+            continue;
+        }
+
+        if (/^on/i.test(name)) {
+            if (typeof value !== "function") {
+                throw new TypeError("Event handler must be a function");
+            }
+
+            const eventName = name.slice(2).toLowerCase();
+            element.addEventListener(eventName, value);
+            continue;
+        }
+
+        if (value === null || value === undefined || value === false) {
+            continue;
+        }
+
+        const attributeName = name === "className" ? "class" : name;
+
+        element.setAttribute(
+            attributeName,
+            value === true ? "" : String(value)
+        );
+    }
+
+    for (const child of vnode.props.children) {
+        element.appendChild(renderToDOM(child));
+    }
+
+    return element;
+}
