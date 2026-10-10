@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Feed — Exercise 3</title>
+    <link rel="stylesheet" href="./style.css">
+    <script src="./app.js" defer></script>
+</head>
+<body>
+    <main>
+        <h1>Data Feed</h1>
+        <p>Tải danh sách bài viết và thử lại khi gặp lỗi kết nối.</p>
+
+        <div class="controls">
+            <button id="load-button" type="button">Tải dữ liệu</button>
+            <button id="error-button" type="button">Thử tình huống lỗi</button>
+            <button id="reset-button" type="button">Đặt lại</button>
+        </div>
+
+        <p id="status-message" role="status" aria-atomic="true">
+            Chưa tải dữ liệu.
+        </p>
+
+        <section aria-labelledby="feed-title">
+            <h2 id="feed-title">Danh sách bài viết</h2>
+
+            <div id="feed-content" aria-busy="false">
+                <p>Nhấn “Tải dữ liệu” để bắt đầu.</p>
+            </div>
+        </section>
+
+        <div id="error-message" role="alert" aria-atomic="true"></div>
+
+        <button id="retry-button" type="button" hidden>
+            Retry Connection — Thử lại kết nối
+        </button>
+    </main>
+</body>
+</html>
