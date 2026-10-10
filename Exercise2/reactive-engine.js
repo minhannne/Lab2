@@ -69,3 +69,45 @@ export function renderApp(component, root) {
         }
     }
 }
+
+const clickHandlers = new WeakMap();
+
+const delegatedRoots = new WeakSet();
+
+export function setClickHandler(element, handler) {
+    clickHandlers.set(element, handler);
+}
+
+export function attachEventDelegation(root) {
+    if (delegatedRoots.has(root)) {
+        return;
+    }
+
+    root.addEventListener("click", (event) => {
+        let element =
+            event.target instanceof Element
+                ? event.target
+                : event.target?.parentElement;
+
+        
+        while (element && root.contains(element)) {
+            const handler = clickHandlers.get(element);
+
+            if (handler) {
+                if (!element.matches(":disabled")) {
+                    handler(event, element);
+                }
+
+                return;
+            }
+
+            if (element === root) {
+                break;
+            }
+
+            element = element.parentElement;
+        }
+    });
+
+    delegatedRoots.add(root);
+}
